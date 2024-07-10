@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Cores */
+  --color-primary-bg: #3490dc;
+  --color-primary-hover: #1963a0;
+
+  --color-primary-text: #ffffff;
+  --color-secondary-bg: #cbd5e0;
+  --color-secondary-text: #4a5568;
+
+  /* Tamanhos heigth */
+  --h-1: 1rem;
+  --h-2: 1.3rem;
+  --h-3: 2rem;
+  --h-4: 2.5rem;
+  --h-5: 3rem;
+  --h-6: 4rem;
+  --h-7: 7rem;
+  --h-8: 14rem;
+  --h-9: 20rem;
+  --h-10: 28rem;
+
+  /* Tamanhos width */
+  --w-1: 2rem;
+  --w-2: 4rem;
+  --w-3: 8rem;
+  --w-4: 12rem;
+  --w-5: 20rem;
+  --w-6: 30rem;
+  --w-7: 48rem;
+
+  /* Fontes */
+
+  --font-1: 'Rubik', sans-serif;
+  --font-2: 'Poppins', sans-serif;
+
+  /* tamanho fontes */
+  --font-size-1: 1rem;
+  --font-size-2: 1.4rem;
+  --font-size-3: 2.2rem;
+  --font-size-4: 3rem;
+}
+
+.dark-mode {
+  /* Estilos para modo escuro */
+  --dark-color-primary-bg: #023258;
+  --dark-color-primary-text: #5a5a5a;
+  --dark-color-secondary-bg: #212224;
+  --dark-color-secondary-text: #252525;
+}
+
+body {
+  min-height: 100vh;
+  min-width: 100vw;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    'Rubik',
+    'Poppins',
+    sans-serif Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

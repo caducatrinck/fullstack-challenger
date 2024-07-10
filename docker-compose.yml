@@ -1,0 +1,54 @@
+services:
+  frontend:
+    container_name: frontend-app
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+
+  backend:
+    container_name: backend-app
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "9003:9003" # Porta padrão do XDebug 3
+    volumes:
+      - ./backend:/var/www/html
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=fullstack_challenger
+      - DB_USERNAME=root_teste_gran
+      - DB_PASSWORD=123123123
+      - XDEBUG_MODE=debug,develop
+      - XDEBUG_CONFIG=client_host=host.docker.internal client_port=9003
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123123123
+      - MYSQL_DATABASE=fullstack_challenger
+      - MYSQL_USER=root_teste_gran
+      - MYSQL_PASSWORD=123123123
+    volumes:
+      - db_data:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  db_data:
