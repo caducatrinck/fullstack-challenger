@@ -6,6 +6,7 @@ import axios, {
   AxiosError
 } from 'axios';
 
+// Crie a instância do Axios
 const http: AxiosInstance = axios.create({
   baseURL: 'http://localhost/api',
   timeout: 10000,
@@ -14,6 +15,20 @@ const http: AxiosInstance = axios.create({
     'Content-Type': 'application/json'
   }
 });
+
+// Interceptando requisições para adicionar o token Bearer
+http.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Interceptando erros de resposta
 http.interceptors.response.use(

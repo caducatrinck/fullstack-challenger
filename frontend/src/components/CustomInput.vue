@@ -18,75 +18,35 @@ watch(localValue, (newValue) => {
 
 const updateValue = (event: Event) => {
   const target = event.target as HTMLInputElement;
-
   localValue.value = target.value;
 };
 </script>
 
 <template>
-  <div class="form-group">
-    <label class="input-label" :for="id">{{ label }}</label>
+  <div class="flex flex-col h-[auto]">
+    <label :for="id" class="mb-1 text-sm text-gray-600 uppercase font-sans input-label">{{
+      label
+    }}</label>
     <input
       :id="id"
       :type="type"
       :value="localValue"
       :placeholder="placeholder"
-      @input="updateValue($event)"
-      :class="[error ? 'is-invalid' : '', 'custom-input']"
+      @input="updateValue"
+      :class="[
+        error ? 'border-red-500' : 'border-gray-300',
+        'h-12 w-full py-2 px-4 text-base font-sans border rounded shadow-sm transition duration-200 ease-in-out focus:outline-none focus:border-blue-500 focus:shadow-lg disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed custom-input'
+      ]"
     />
-    <span v-if="error" class="error">{{ error }}</span>
+    <span v-if="error" class="text-red-500 text-xs mt-1 input-label uppercase">{{ error }}</span>
   </div>
 </template>
 
 <style scoped>
-.error {
-  color: red;
-  font-size: 0.8rem;
-  height: var(--h-2);
-}
-.is-invalid {
-  border-color: red;
-}
-
 .input-label {
-  margin-bottom: 5px; /* Espaçamento inferior entre a label e o input */
-  font-size: 14px; /* Tamanho da fonte da label */
-  color: #666; /* Cor do texto da label */
-  text-transform: uppercase;
   font-family: var(--font-1);
 }
 .custom-input {
-  height: var(--h-5);
-  width: var(--w-5);
   font-family: var(--font-1);
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition:
-    border-color 0.2s ease-in-out,
-    box-shadow 0.2s ease-in-out;
-
-  &:focus {
-    outline: none;
-    border-color: #4a90e2;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  &:disabled {
-    background-color: #f2f2f2;
-    color: #999;
-    border-color: #ddd;
-    cursor: not-allowed;
-  }
-}
-.is-invalid {
-  border-color: red;
-}
-.form-group {
-  display: flex;
-  flex-direction: column;
-  height: var(--h-7);
 }
 </style>
