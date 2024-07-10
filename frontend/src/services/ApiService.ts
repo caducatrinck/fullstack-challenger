@@ -46,8 +46,8 @@ http.interceptors.response.use(
 );
 
 // Função genérica para fazer uma requisição e retornar a resposta tipada
-export async function makeRequest<T>(config: AxiosRequestConfig): Promise<IApiReturn<T>> {
-  const response: AxiosResponse<IApiReturn<T>> = await http.request<IApiReturn<T>>(config);
+export async function makeRequest<T>(config: AxiosRequestConfig): Promise<T> {
+  const response: AxiosResponse<T> = await http.request<T>(config);
   return response.data; // Retorna apenas os dados da resposta
 }
 

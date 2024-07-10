@@ -31,5 +31,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::prefix('categorias')->group(function () {
         Route::post('/', [CategoriaController::class, 'store']);
+        Route::get('/', [CategoriaController::class, 'index']);
     });
 });

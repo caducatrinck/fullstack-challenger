@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import type { ICustonInputProps } from '@/types/custonInput';
 import { ref, watch } from 'vue';
+import { formatarDinheiroBR } from '@/utils/format';
 
 const props = withDefaults(defineProps<ICustonInputProps>(), {
   modelValue: '',
   placeholder: '',
-  error: ''
+  error: '',
+  type: 'text'
 });
 
 const emit = defineEmits(['update:modelValue']);
 
 const localValue = ref(props.modelValue);
+const hasInteracted = ref(false); // Novo estado para rastrear a interação do usuário
 
 watch(localValue, (newValue) => {
   emit('update:modelValue', newValue);
@@ -18,19 +21,23 @@ watch(localValue, (newValue) => {
 
 const updateValue = (event: Event) => {
   const target = event.target as HTMLInputElement;
-  localValue.value = target.value;
+  const value = target.value;
+
+  localValue.value = value;
+
+  if (!hasInteracted.value) {
+    hasInteracted.value = true; // Marcar como interagido após a primeira entrada
+  }
 };
 </script>
 
 <template>
   <div class="flex flex-col h-[auto]">
-    <label :for="id" class="mb-1 text-sm text-gray-600 uppercase font-sans input-label">{{
-      label
-    }}</label>
+    <label :for="id" class="mb-1 text-sm text-gray-600 uppercase input-label">{{ label }}</label>
     <input
       :id="id"
-      :type="type"
-      :value="localValue"
+      :type="type === 'currency' ? 'text' : type"
+      :value="type === 'currency' && hasInteracted ? formatarDinheiroBR(localValue) : localValue"
       :placeholder="placeholder"
       @input="updateValue"
       :class="[

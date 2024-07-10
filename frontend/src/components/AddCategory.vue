@@ -39,8 +39,8 @@ import CustomInput from '@/components/CustomInput.vue';
 import RadioInput from '@/components/RadioInput.vue';
 import CustomButton from '@/components/CustomButton.vue';
 import CustomLoading from '@/components/CustomLoading.vue';
-import { createCategory } from '@/services/categoryService';
 import { useToast } from 'vue-toast-notification';
+import CategoryService from '@/services/CategoryService';
 
 // Criando refs e inicializando o toast
 const loading = ref(false);
@@ -66,9 +66,9 @@ const { value: situacao, errorMessage: situacaoError } = useField<boolean>('situ
 // Função de submissão do formulário
 const submitForm = handleSubmit(async (values) => {
   loading.value = true;
-  console.log('test'); // Verificar se esta linha é executada
+
   try {
-    await createCategory({ nome: values.name, situacao: values.situacao });
+    await CategoryService.create({ nome: values.name, situacao: values.situacao });
     $toast.success('Categoria adicionada com sucesso');
     router.push({ name: 'dashboard' });
   } catch (error: any) {

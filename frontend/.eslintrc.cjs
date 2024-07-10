@@ -43,13 +43,6 @@ module.exports = {
     'vue/require-default-prop': 'error',
     'vue/attribute-hyphenation': ['error', 'always'],
     '@typescript-eslint/no-explicit-any': 'off',
-    'vue/html-closing-bracket-newline': [
-      'error',
-      {
-        singleline: 'never',
-        multiline: 'always'
-      }
-    ],
     'no-restricted-syntax': [
       'error',
       {

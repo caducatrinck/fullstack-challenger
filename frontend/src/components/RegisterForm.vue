@@ -5,7 +5,7 @@ import CustomButton from './CustomButton.vue';
 import CustomLoading from './CustomLoading.vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toast-notification';
-import { createUser } from '@/services/userService';
+import UserService from '@/services/UserService';
 import { useField, useForm } from 'vee-validate';
 import * as Yup from 'yup';
 
@@ -32,7 +32,7 @@ const { value: confirmPassword, errorMessage: confirmPasswordError } =
 const onSubmit = async () => {
   loading.value = true;
   try {
-    const teste = await createUser({ username: username.value, password: password.value });
+    const teste = await UserService.create({ username: username.value, password: password.value });
     $toast.success(teste?.message || 'usuario criado');
     router.push('/login');
   } catch (error: any) {

@@ -7,7 +7,7 @@ import CustomButton from './CustomButton.vue';
 import { useField, useForm } from 'vee-validate';
 import CustomLoading from './CustomLoading.vue';
 import { useToast } from 'vue-toast-notification';
-import { login } from '@/services/authService';
+import AuthService from '@/services/AuthService';
 import { useToken } from '@/stores/auth';
 
 const loginError = ref<string>('');
@@ -30,7 +30,10 @@ const store = useToken();
 const onSubmit = async () => {
   loading.value = true;
   try {
-    const response = await login({ username: username.value, password: password.value });
+    const response = await AuthService.login({
+      username: username.value,
+      password: password.value
+    });
     $toast.success(response.message || 'Login efetuado com sucesso');
 
     store.setToken(response.data.token);

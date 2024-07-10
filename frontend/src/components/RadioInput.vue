@@ -7,9 +7,11 @@ const props = withDefaults(
     label: string;
     options: { value: boolean; text: string }[];
     modelValue: boolean;
+    layout: 'vertical' | 'horizontal'; // Adiciona a prop layout
   }>(),
   {
-    modelValue: true
+    modelValue: true,
+    layout: 'vertical' // Define o layout padrão como vertical
   }
 );
 
@@ -27,11 +29,13 @@ const updateValue = (value: boolean) => {
 </script>
 
 <template>
-  <div class="flex flex-col h-[auto]">
+  <div :class="`flex flex-col h-[auto] ${props.layout === 'horizontal' ? 'flex-row' : 'flex-col'}`">
     <label :for="id" class="text-sm text-gray-600 uppercase font-sans input-label">{{
       label
     }}</label>
-    <div class="flex flex-col space-y-2 mt-1">
+    <div
+      :class="`mt-1 ${props.layout === 'horizontal' ? 'flex flex-row space-x-4' : 'flex flex-col space-y-2'}`"
+    >
       <div v-for="option in options" :key="option.text" class="flex items-center">
         <input
           type="radio"
