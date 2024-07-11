@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import type { IProdutoCard } from '@/types/produtos';
 import { centavosParaReal } from '@/utils/format';
-import { defineProps, computed } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
   product: IProdutoCard;

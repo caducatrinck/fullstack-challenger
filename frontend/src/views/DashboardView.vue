@@ -34,7 +34,9 @@
         class="w-full"
       />
     </div>
-
+    <span v-if="products.length === 0" class="text-3xl font-bold mb-6 text-gray-600 ou">
+      Nenhum produto cadastrado</span
+    >
     <CustomPagination
       v-if="
         !loadingProdutos &&
@@ -94,7 +96,7 @@ const fetchProducts = async (page = 1) => {
     const response = await ProductService.get(
       page,
       itemsPerPage.value,
-      localSelectedCategories.value
+      localSelectedCategories.value || undefined
     );
     products.value = response.data.produtos;
     pagination.value = response.data;

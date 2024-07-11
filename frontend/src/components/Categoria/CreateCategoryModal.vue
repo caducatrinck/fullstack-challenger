@@ -20,15 +20,15 @@
         >
           &times;
         </button>
-        <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Add Category</h1>
+        <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Cadastrar categoria</h1>
         <form @submit.prevent="submitForm" class="flex flex-col gap-4">
           <CustomLoading :is-loading="loading" />
           <CustomTextInput
             id="name"
-            label="Category Name"
+            label="NOME DA CATEGORIA"
             v-model="nome"
             type="text"
-            placeholder="Enter category name"
+            placeholder="Nome da categoria"
             :error="nomeError"
           />
           <CustomRadioInput
@@ -94,11 +94,11 @@ const submitForm = async () => {
       nome: nome.value,
       situacao: situacao.value ? true : false
     };
-    const response = await CategoryService.create(formDataToSend);
+    await CategoryService.create(formDataToSend);
 
     resetForm();
     closeModal();
-    $toast.success(response.message || 'Categoria adicionada com sucesso!');
+    $toast.success('Categoria adicionada com sucesso!');
     emit('update:categories');
   } catch (error) {
     $toast.error('Erro ao adicionar categoria.');

@@ -20,7 +20,7 @@
         >
           &times;
         </button>
-        <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Adicionar Produto</h1>
+        <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Cadastrar Produto</h1>
         <form @submit.prevent="onSubmit" class="flex flex-col gap-4">
           <CustomLoading :is-loading="loading" />
 
@@ -173,11 +173,11 @@ const onSubmit = async () => {
     formDataToSend.append('preco', preco.value?.replace(/\D/g, ''));
     formDataToSend.append('situacao', situacao.value ? '1' : '0');
 
-    const response = await ProductService.create(formDataToSend);
+    await ProductService.create(formDataToSend);
 
     resetForm();
     closeModal();
-    $toast.success(response.message || 'Produto adicionado com sucesso!');
+    $toast.success('Produto adicionado com sucesso!');
     emit('update:products');
   } catch (error) {
     $toast.error('Erro ao adicionar produto. Por favor, tente novamente.');

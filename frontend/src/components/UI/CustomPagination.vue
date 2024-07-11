@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 import type { IPaginationProps } from '@/types/pagination';
-import { ref, computed, watch, defineProps, defineEmits } from 'vue';
+import { ref, computed, watch, defineEmits } from 'vue';
 
 const props = defineProps<IPaginationProps>();
 

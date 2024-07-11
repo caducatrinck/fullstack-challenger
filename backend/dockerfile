@@ -78,5 +78,8 @@ RUN echo '<VirtualHost *:80>\n\
 # Exponha a porta que o Apache irá usar
 EXPOSE 80
 
-# Comando para iniciar o servidor Apache
-CMD ["apache2-foreground"]
+# Copie o script de inicialização para o contêiner
+COPY start.sh /var/www/html/
+
+# Comando para iniciar o servidor Apache via script de inicialização
+CMD ["/var/www/html/start.sh"]

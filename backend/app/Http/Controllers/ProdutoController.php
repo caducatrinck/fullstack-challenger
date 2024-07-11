@@ -13,7 +13,6 @@ class ProdutoController extends Controller
 {
     public function store(Request $request)
     {
-
         error_log('Recebendo requisição: ' . json_encode($request->all()));
 
         try {
@@ -25,53 +24,55 @@ class ProdutoController extends Controller
                 'situacao' => 'required|boolean',
             ]);
 
-
             error_log('Dados validados: ' . json_encode($validated));
-
 
             $validated['categoria_id'] = (int) $validated['categoria_id'];
             $validated['preco'] = (float) $validated['preco'];
             $validated['situacao'] = filter_var($validated['situacao'], FILTER_VALIDATE_BOOLEAN);
-
 
             if ($request->hasFile('foto')) {
                 $foto = $request->file('foto');
                 $nomeFoto = time() . '_' . $foto->getClientOriginalName();
                 $caminhoFoto = $foto->storeAs('public/produtos', $nomeFoto);
 
-
                 error_log('Foto armazenada em: ' . $caminhoFoto);
-
 
                 $validated['foto'] = $nomeFoto;
             } else {
                 error_log('Nenhuma foto recebida.');
             }
 
-
             $produto = Produto::create($validated);
 
-            // Limpar o cache quando um novo produto é criado
-            Cache::forget('produtos');
+            // Limpar o cache para todas as categorias e categorias específicas
+            $page = $request->query('page', 1);
+            $perPage = $request->query('per_page', 10);
+
+            // Limpar cache para todas as categorias
+            $allCacheKey = "produtos:categoria:all:page:$page:per_page:$perPage";
+            Cache::forget($allCacheKey);
+
+            // Limpar cache para a categoria específica
+            $categoriaId = $validated['categoria_id'];
+            $specificCacheKey = "produtos:categoria:$categoriaId:page:$page:per_page:$perPage";
+            Cache::forget($specificCacheKey);
 
             return response()->json($produto, 201);
         } catch (ValidationException $e) {
             error_log('Erros de validação: ' . json_encode($e->errors()));
 
-
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-
             error_log('Erro ao criar produto: ' . $e->getMessage());
-
 
             return response()->json(['message' => 'Erro ao criar produto'], 500);
         }
     }
 
+
+
     public function index(Request $request)
     {
-
         error_log('Recebendo parâmetros: ' . json_encode($request->query()));
 
         $categoriaId = $request->query('categoria_id');
@@ -80,21 +81,19 @@ class ProdutoController extends Controller
 
         error_log("Categoria ID: $categoriaId, Página: $page, Por Página: $perPage");
 
-        $cacheKey = "produtos:categoria:$categoriaId:page:$page:per_page:$perPage";
+        $cacheKey = "produtos:categoria:" . ($categoriaId ?: 'all') . ":page:$page:per_page:$perPage";
 
         $produtos = Cache::remember($cacheKey, 3600, function () use ($categoriaId, $perPage) {
             $query = Produto::query();
 
-            if ($categoriaId) {
+            if ($categoriaId !== null && $categoriaId !== '') {
                 $query->where('categoria_id', $categoriaId);
             }
 
             return $query->with('categoria')->paginate($perPage);
         });
 
-
         error_log('Produtos encontrados: ' . json_encode($produtos->items()));
-
 
         $produtos->getCollection()->transform(function ($produto) {
             if ($produto->foto) {

@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   frontend:
@@ -30,11 +30,11 @@ services:
       - DB_HOST=db
       - DB_PORT=3306
       - DB_DATABASE=fullstack_challenger
-      - DB_USERNAME=root_teste_gran
+      - DB_USERNAME=root_fullstack_challenger
       - DB_PASSWORD=123123123
       - XDEBUG_MODE=debug,develop
       - XDEBUG_CONFIG=client_host=host.docker.internal client_port=9003
-    command: /bin/sh -c "chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache && php artisan storage:link && apache2-foreground"
+    command: /bin/sh -c "chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache && php artisan storage:link && php artisan migrate && apache2-foreground"
 
   db:
     image: mysql:8.0
@@ -44,7 +44,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=123123123
       - MYSQL_DATABASE=fullstack_challenger
-      - MYSQL_USER=root_teste_gran
+      - MYSQL_USER=root_fullstack_challenger
       - MYSQL_PASSWORD=123123123
     volumes:
       - db_data:/var/lib/mysql

@@ -80,11 +80,11 @@ const onSubmit = async () => {
       return;
     }
     loading.value = true;
-    const response = await UserService.create({
+    await UserService.create({
       username: username.value,
       password: password.value
     });
-    $toast.success(response?.message || 'Usuário criado');
+    $toast.success('Usuário criado!');
     resetForm();
     router.push('/login');
   } catch (error) {

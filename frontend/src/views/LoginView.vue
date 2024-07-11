@@ -79,7 +79,7 @@ const onSubmit = async () => {
       username: username.value,
       password: password.value
     });
-    $toast.success(response.message || 'Login efetuado com sucesso');
+    $toast.success('Login efetuado com sucesso');
     store.setToken(response.data.token);
   } catch (error) {
     const err = error as IApiErroReturn;

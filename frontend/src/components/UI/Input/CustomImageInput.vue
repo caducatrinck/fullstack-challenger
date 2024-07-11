@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
-import { defineProps, defineEmits } from 'vue';
+import { defineEmits } from 'vue';
 
 const props = defineProps<{
   id: string;
