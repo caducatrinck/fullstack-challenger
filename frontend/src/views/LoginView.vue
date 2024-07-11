@@ -81,9 +81,8 @@ const onSubmit = async () => {
     });
     $toast.success('Login efetuado com sucesso');
     store.setToken(response.data.token);
-  } catch (error) {
-    const err = error as IApiErroReturn;
-    $toast.error(err.message || 'Falha ao logar');
+  } catch (error: any) {
+    $toast.error(error.message || 'Falha ao logar');
   } finally {
     loading.value = false;
   }

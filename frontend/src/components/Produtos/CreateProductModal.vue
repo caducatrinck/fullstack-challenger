@@ -106,7 +106,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineEmits } from 'vue';
+import { ref, onMounted, defineEmits, watch } from 'vue';
 import CustomButton from '../UI/Button/CustomButton.vue';
 import CustomRadioInput from '../UI/Input/CustomRadioInput.vue';
 import CustomSelectInput from '../UI/Input/CustomSelectInput.vue';
@@ -187,6 +187,7 @@ const onSubmit = async () => {
 };
 
 const GetAndSetCategory = async () => {
+  if (!isModalOpen.value) return;
   loadingCategory.value = true;
   const response = await CategoryService.get();
   categories.value = response.data.map((category) => ({
@@ -201,6 +202,12 @@ onMounted(() => {
 });
 
 const isModalOpen = ref(false);
+
+watch(isModalOpen, (newValue) => {
+  if (newValue) {
+    GetAndSetCategory();
+  }
+});
 
 const openModal = () => {
   isModalOpen.value = true;
