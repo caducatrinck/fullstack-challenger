@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import router from '@/router'; // Importe o roteador
+import router from '@/router';
 
 export const useToken = defineStore('auth', {
   state: () => ({
@@ -16,7 +16,7 @@ export const useToken = defineStore('auth', {
     clearToken() {
       this.token = null;
       localStorage.removeItem('token');
-      router.push({ name: 'login' }); // Redirecione para a tela de login
+      router.push({ name: 'login' });
     }
   }
 });

@@ -6,17 +6,17 @@ use App\Models\Produto;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class ProdutoController extends Controller
 {
     public function store(Request $request)
     {
-        // Adicione logs para verificar o request recebido
+
         error_log('Recebendo requisição: ' . json_encode($request->all()));
 
         try {
-            // Validação dos dados recebidos
             $validated = $request->validate([
                 'categoria_id' => 'required|integer|exists:categorias,id',
                 'nome' => 'required|string|max:255',
@@ -25,30 +25,30 @@ class ProdutoController extends Controller
                 'situacao' => 'required|boolean',
             ]);
 
-            // Log dos dados validados
+
             error_log('Dados validados: ' . json_encode($validated));
 
-            // Conversão dos dados para os tipos corretos
+
             $validated['categoria_id'] = (int) $validated['categoria_id'];
             $validated['preco'] = (float) $validated['preco'];
             $validated['situacao'] = filter_var($validated['situacao'], FILTER_VALIDATE_BOOLEAN);
 
-            // Processar o upload da imagem
+
             if ($request->hasFile('foto')) {
                 $foto = $request->file('foto');
                 $nomeFoto = time() . '_' . $foto->getClientOriginalName();
                 $caminhoFoto = $foto->storeAs('public/produtos', $nomeFoto);
 
-                // Log do caminho da foto
+
                 error_log('Foto armazenada em: ' . $caminhoFoto);
 
-                // Atualizar o nome da foto no array validado
+
                 $validated['foto'] = $nomeFoto;
             } else {
                 error_log('Nenhuma foto recebida.');
             }
 
-            // Criar o produto
+
             $produto = Produto::create($validated);
 
             // Limpar o cache quando um novo produto é criado
@@ -56,23 +56,22 @@ class ProdutoController extends Controller
 
             return response()->json($produto, 201);
         } catch (ValidationException $e) {
-            // Log dos erros de validação
             error_log('Erros de validação: ' . json_encode($e->errors()));
 
-            // Retornar os erros de validação como resposta
+
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-            // Log de qualquer outra exceção
+
             error_log('Erro ao criar produto: ' . $e->getMessage());
 
-            // Retornar uma resposta genérica de erro
+
             return response()->json(['message' => 'Erro ao criar produto'], 500);
         }
     }
 
     public function index(Request $request)
     {
-        // Adicione logs para verificar os parâmetros da requisição
+
         error_log('Recebendo parâmetros: ' . json_encode($request->query()));
 
         $categoriaId = $request->query('categoria_id');
@@ -90,13 +89,13 @@ class ProdutoController extends Controller
                 $query->where('categoria_id', $categoriaId);
             }
 
-            return $query->with('categoria')->paginate($perPage); // Inclua a relação com a categoria
+            return $query->with('categoria')->paginate($perPage);
         });
 
-        // Adicione logs para verificar os produtos retornados
+
         error_log('Produtos encontrados: ' . json_encode($produtos->items()));
 
-        // Adicionar a URL completa da imagem
+
         $produtos->getCollection()->transform(function ($produto) {
             if ($produto->foto) {
                 $produto->foto = url('storage/produtos/' . $produto->foto);

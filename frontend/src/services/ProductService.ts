@@ -1,13 +1,12 @@
-import type { IApiPaginationReturn, IGetListaProdutos } from '@/types/produtos';
+import type { IApiPaginationReturn, IGetListaProdutos, IPostProdutos } from '@/types/produtos';
 import { makeRequest } from './ApiService';
-import type { ICategory } from '@/types/categoria';
 import type { IApiReturn } from '@/types/api';
 
 const PATH = '/produtos';
 
 export default {
-  create: async (data: FormData): Promise<IApiReturn<[]>> => {
-    return await makeRequest<IApiReturn<[]>>({
+  create: async (data: FormData): Promise<IApiReturn<IPostProdutos>> => {
+    return await makeRequest<IApiReturn<IPostProdutos>>({
       method: 'POST',
       url: `${PATH}`,
       headers: {
@@ -32,14 +31,6 @@ export default {
       method: 'GET',
       url: `${PATH}`,
       params
-    });
-  },
-
-  getCategories: async (search = ''): Promise<IApiReturn<ICategory[]>> => {
-    return await makeRequest<IApiReturn<ICategory[]>>({
-      method: 'GET',
-      url: `/categorias`,
-      params: { search }
     });
   }
 };

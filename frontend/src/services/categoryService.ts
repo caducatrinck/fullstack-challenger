@@ -1,11 +1,11 @@
 import type { IApiReturn } from '@/types/api';
 import { makeRequest } from './ApiService';
-import type { ICategory, IGetCategory } from '@/types/categoria';
+import type { ICategory, IGetCategory, IPostCategory } from '@/types/categoria';
 
 const PATH = '/categorias';
 export default {
-  create: async (data: ICategory): Promise<IApiReturn<[]>> => {
-    return await makeRequest<IApiReturn<[]>>({
+  create: async (data: ICategory): Promise<IApiReturn<IPostCategory>> => {
+    return await makeRequest<IApiReturn<IPostCategory>>({
       method: 'POST',
       url: `${PATH}`,
       data

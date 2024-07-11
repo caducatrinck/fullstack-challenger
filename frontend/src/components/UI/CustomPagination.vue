@@ -6,7 +6,7 @@
         id="itemsPerPage"
         v-model="localItemsPerPage"
         @change="updateItemsPerPage"
-        class="px-4 py-2 border !border-blue-600 rounded-lg shadow-sm outline-none focus:border-blue-500"
+        class="px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 transition duration-200 outline-none"
       >
         <option v-for="option in itemsPerPageOptions" :key="option" :value="option">
           {{ option }}
@@ -16,7 +16,7 @@
       <button
         @click="goToPage(currentPage - 1)"
         :disabled="currentPage <= 1"
-        class="h-auto w-6 rounded-lg text-blue-500 hover:text-black transition"
+        class="flex items-center justify-center h-auto w-6 rounded-lg text-blue-500 hover:text-black transition duration-200 disabled:cursor-not-allowed disabled:opacity-50"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -36,7 +36,7 @@
         :key="page"
         @click="goToPage(page)"
         :class="[
-          'px-4 py-2 rounded-lg',
+          'px-4 py-2 rounded-lg transition duration-200',
           page === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'
         ]"
       >
@@ -45,7 +45,7 @@
       <button
         @click="goToPage(currentPage + 1)"
         :disabled="currentPage >= totalPages"
-        class="h-auto w-6 rounded-lg text-blue-500 hover:text-black transition"
+        class="flex items-center justify-center h-auto w-6 rounded-lg text-blue-500 hover:text-black transition duration-200 disabled:cursor-not-allowed disabled:opacity-50"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IPaginationProps } from '@/types/produtos';
+import type { IPaginationProps } from '@/types/pagination';
 import { ref, computed, watch, defineProps, defineEmits } from 'vue';
 
 const props = defineProps<IPaginationProps>();
@@ -105,35 +105,3 @@ watch(
   }
 );
 </script>
-
-<style scoped>
-/* Estilo para o select */
-select {
-  padding: 0.5rem 1rem;
-  background-color: #fff;
-  border: 1px solid #d1d5db; /* gray-300 */
-  border-radius: 0.5rem; /* rounded-lg */
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
-  transition: border-color 0.2s;
-}
-
-select:focus {
-  border-color: #3b82f6; /* blue-500 */
-  outline: none;
-}
-
-/* Estilo para os botões de paginação */
-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background-color 0.2s,
-    color 0.2s;
-}
-
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-</style>

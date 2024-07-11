@@ -28,6 +28,7 @@
     "allowSyntheticDefaultImports": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
+    "types": ["jest", "node"],
     "paths": {
       "@/*": ["./src/*"]
     }

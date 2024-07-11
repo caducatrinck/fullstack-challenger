@@ -8,6 +8,7 @@ use App\Http\Controllers\ProdutoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserProfileController;
+use Illuminate\Support\Facades\Cache;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,7 @@ use App\Http\Controllers\UserProfileController;
 
 Route::post('/users', [UserController::class, 'store']);
 Route::post('/login', [AuthController::class, 'login']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
 

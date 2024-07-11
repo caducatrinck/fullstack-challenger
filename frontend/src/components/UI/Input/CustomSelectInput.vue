@@ -1,19 +1,22 @@
 <template>
   <div class="flex flex-col h-auto">
-    <label :for="id" class="mb-1 text-sm text-gray-600 uppercase font-sans font">{{ label }}</label>
+    <label :for="id" class="font-bold mb-1 text-sm text-gray-900 uppercase">
+      {{ label }}
+    </label>
     <div class="relative">
       <div
         @click="toggleDropdown"
-        class="w-full h-12 py-2 px-4 text-base font-sans border rounded shadow-sm transition duration-200 ease-in-out focus:outline-none focus:border-blue-500 focus:shadow-lg disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed custom-input flex items-center justify-between"
+        class="w-full h-12 py-2 px-4 text-base font-sans border rounded shadow-sm transition duration-200 ease-in-out focus:outline-none focus:border-blue-500 focus:shadow-lg disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed flex items-center justify-between"
         :class="isError ? 'border-red-500' : 'border-gray-300'"
         :style="{ cursor: loading ? 'not-allowed' : 'pointer' }"
       >
-        <span :class="`${selectedOption ? 'text-gray-900' : 'text-gray-600'} text-gray-400 font`">{{
-          selectedOption
-            ? options.filter((option) => option.value === selectedOption)[0].label
-            : placeholder
-        }}</span>
-
+        <span :class="selectedOption ? 'text-gray-900' : 'text-gray-400'">
+          {{
+            selectedOption
+              ? options.find((option) => option.value === selectedOption)?.label
+              : placeholder
+          }}
+        </span>
         <div class="flex items-center">
           <template v-if="loading">
             <div class="w-8 h-8 relative">
@@ -70,7 +73,7 @@
               v-for="option in options"
               :key="option.value"
               @click="selectOption(option)"
-              class="p-2 cursor-pointer font-bold hover:bg-blue-100"
+              class="p-2 cursor-pointer hover:bg-blue-100"
             >
               {{ option.label }}
             </li>
@@ -79,9 +82,9 @@
       </transition>
     </div>
     <div class="min-h-6">
-      <span v-if="isError" class="text-red-500 text-xs mt-1 font input-label uppercase">{{
-        isError
-      }}</span>
+      <span v-if="isError" class="text-red-500 text-xs mt-1 uppercase font-sans">
+        {{ isError }}
+      </span>
     </div>
   </div>
 </template>
@@ -98,13 +101,13 @@ const props = withDefaults(
     placeholder: string;
     options: IOptions[];
     error?: string;
-    loading: boolean; // Adiciona a prop loading
+    loading: boolean;
   }>(),
   {
     modelValue: null,
     placeholder: 'Select an option',
     error: '',
-    loading: false // Valor padrão para loading
+    loading: false
   }
 );
 
@@ -113,7 +116,21 @@ const emit = defineEmits(['update:modelValue']);
 const isOpen = ref(false);
 const isError = ref(props.error);
 
-const selectedOption = ref<number | null>();
+const selectedOption = ref<number | null>(props.modelValue);
+
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    selectedOption.value = newVal;
+  }
+);
+
+watch(
+  () => props.error,
+  (newError) => {
+    isError.value = newError;
+  }
+);
 
 const toggleDropdown = () => {
   if (!props.loading) {
@@ -128,14 +145,6 @@ const clearSelection = () => {
     isOpen.value = false;
   }
 };
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    if (!newVal) {
-      clearSelection();
-    }
-  }
-);
 
 const selectOption = (option: IOptions) => {
   if (!props.loading) {
@@ -145,20 +154,3 @@ const selectOption = (option: IOptions) => {
   }
 };
 </script>
-
-<style scoped>
-.font {
-  font-family: var(--font-1);
-}
-.dropdown-enter-active,
-.dropdown-leave-active {
-  transition: opacity 0.3s ease;
-}
-.dropdown-enter-from,
-.dropdown-leave-to {
-  opacity: 0;
-}
-.rotate-180 {
-  transform: rotate(180deg);
-}
-</style>

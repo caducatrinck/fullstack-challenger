@@ -7,11 +7,11 @@ const props = withDefaults(
     label: string;
     options: { value: boolean; text: string }[];
     modelValue: boolean;
-    layout: 'vertical' | 'horizontal'; // Adiciona a prop layout
+    layout: 'vertical' | 'horizontal';
   }>(),
   {
     modelValue: true,
-    layout: 'vertical' // Define o layout padrão como vertical
+    layout: 'vertical'
   }
 );
 
@@ -30,7 +30,7 @@ const updateValue = (value: boolean) => {
 
 <template>
   <div :class="`flex flex-col h-[auto] ${props.layout === 'horizontal' ? 'flex-row' : 'flex-col'}`">
-    <label :for="id" class="text-sm text-gray-600 uppercase font-sans input-label">{{
+    <label :for="id" class="font-bold mb-1 text-sm text-w text-gray-900 uppercase font">{{
       label
     }}</label>
     <div
@@ -52,9 +52,3 @@ const updateValue = (value: boolean) => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.input-label {
-  font-family: var(--font-1);
-}
-</style>

@@ -6,7 +6,6 @@ import axios, {
   AxiosError
 } from 'axios';
 
-// Crie a instância do Axios
 const http: AxiosInstance = axios.create({
   baseURL: 'http://localhost/api',
   timeout: 10000,
@@ -16,7 +15,6 @@ const http: AxiosInstance = axios.create({
   }
 });
 
-// Interceptando requisições para adicionar o token Bearer
 http.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -30,25 +28,22 @@ http.interceptors.request.use(
   }
 );
 
-// Interceptando erros de resposta
 http.interceptors.response.use(
   (response: AxiosResponse<IApiReturn<any>>) => {
-    return response; // Retorna o objeto completo AxiosResponse
+    return response;
   },
   (error: AxiosError<IApiReturn<any>>) => {
-    // Verifica se há uma resposta de erro com dados
     if (error.response && error.response.data) {
       const errorData: IApiReturn<any> = error.response.data;
-      return Promise.reject(errorData); // Rejeita a promise com os dados de erro
+      return Promise.reject(errorData);
     }
-    return Promise.reject(error.response); // Rejeita a promise com a resposta de erro
+    return Promise.reject(error.response);
   }
 );
 
-// Função genérica para fazer uma requisição e retornar a resposta tipada
 export async function makeRequest<T>(config: AxiosRequestConfig): Promise<T> {
   const response: AxiosResponse<T> = await http.request<T>(config);
-  return response.data; // Retorna apenas os dados da resposta
+  return response.data;
 }
 
 export default http;

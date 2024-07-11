@@ -1,6 +1,8 @@
 <template>
   <div class="flex flex-col h-auto">
-    <label :for="id" class="mb-1 text-sm text-gray-600 uppercase font-sans font">{{ label }}</label>
+    <label :for="id" class="font-bold mb-1 text-sm text-w text-gray-900 uppercase font">{{
+      label
+    }}</label>
     <div class="relative">
       <input
         type="file"
@@ -12,7 +14,7 @@
       />
       <div
         @click="triggerFileInput"
-        class="w-40 h-40 border rounded shadow-sm transition duration-200 ease-in-out focus:outline-none focus:border-blue-500 focus:shadow-lg disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed cursor-pointer custom-input flex items-center justify-center overflow-hidden relative"
+        class="relative w-40 h-40 border rounded shadow-sm transition duration-200 ease-in-out focus:outline-none focus:border-blue-500 focus:shadow-lg disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed cursor-pointer custom-input overflow-hidden"
         :class="error || props.error ? 'border-red-500' : 'border-gray-300'"
       >
         <template v-if="file">
@@ -34,9 +36,11 @@
           </svg>
         </template>
         <template v-else>
-          <span class="text-gray-400">{{ placeholder }}</span>
+          <span class="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">{{
+            placeholder
+          }}</span>
           <svg
-            class="w-6 h-6 text-gray-500 transition-transform duration-300 pointer-events-none"
+            class="absolute top-2 right-2 w-6 h-6 text-gray-500 transition-transform duration-300 pointer-events-none"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -58,31 +62,23 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 
-const props = withDefaults(
-  defineProps<{
-    id: string;
-    label: string;
-    modelValue: File | null;
-    placeholder: string;
-    maxFileSize: number; // tamanho máximo do arquivo em bytes
-    acceptedFileTypes: string[]; // extensões de arquivo aceitas
-    error?: string;
-  }>(),
-  {
-    modelValue: null,
-    placeholder: 'Selecione um arquivo',
-    maxFileSize: 2 * 1024 * 1024, // 2 MB por padrão
-    acceptedFileTypes: () => ['image/png', 'image/jpeg', 'image/jpg'],
-    error: ''
-  }
-);
+const props = defineProps<{
+  id: string;
+  label: string;
+  modelValue: File | null;
+  placeholder: string;
+  maxFileSize: number;
+  acceptedFileTypes: string[];
+  error?: string;
+}>();
 
 const emit = defineEmits(['update:modelValue']);
 
 const file = ref<File | null>(props.modelValue);
 const error = ref(props.error);
-const fileInput = ref<HTMLInputElement | null>(null); // Adiciona a referência ao input de arquivo
+const fileInput = ref<HTMLInputElement | null>(null);
 
 const imageSrc = computed(() => {
   return file.value ? URL.createObjectURL(file.value) : '';
@@ -109,17 +105,16 @@ const handleFileChange = (event: Event) => {
 
     file.value = selectedFile;
     emit('update:modelValue', selectedFile);
-    error.value = ''; // Limpa o erro, se houver
+    error.value = '';
   }
 };
 
 const removeFile = () => {
   file.value = null;
   emit('update:modelValue', null);
-  error.value = ''; // Limpa o erro, se houver
+  error.value = '';
 };
 
-// Sincroniza a prop modelValue com a variável local file
 watch(
   () => props.modelValue,
   (newValue) => {
@@ -127,33 +122,3 @@ watch(
   }
 );
 </script>
-<style scoped>
-.font {
-  font-family: var(--font-1);
-}
-
-.custom-input {
-  /* Adicione aqui estilos adicionais, se necessário */
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.custom-input img {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-}
-
-.custom-input svg {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  background: white;
-  border-radius: 50%;
-  padding: 2px;
-}
-</style>

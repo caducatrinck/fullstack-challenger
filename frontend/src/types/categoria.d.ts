@@ -9,3 +9,11 @@ export interface IGetCategory {
   situacao: boolean;
   id: number;
 }
+
+export interface IPostCategory {
+  nome: string;
+  situacao: boolean;
+  updated_at: string;
+  created_at: string;
+  id: number;
+}

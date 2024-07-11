@@ -11,7 +11,7 @@ export default defineConfig({
     }
   },
   server: {
-    host: '0.0.0.0', // Permite conexões externas, essencial para Docker
-    port: 5173 // Porta que o Vite usará
+    host: '0.0.0.0',
+    port: 5173
   }
 });
