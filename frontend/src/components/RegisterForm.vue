@@ -72,7 +72,7 @@ const onSubmit = async () => {
       id="confirmPassword"
       :error="confirmPasswordError"
     />
-    <CustomButton type="submit" msg="Criar conta" />
+    <CustomButton class="w-[98%] h-[38px]" type="submit" msg="Criar conta" />
     <p v-if="loginError" class="error">{{ loginError }}</p>
   </form>
 </template>

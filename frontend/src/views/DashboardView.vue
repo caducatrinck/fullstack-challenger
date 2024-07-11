@@ -47,7 +47,10 @@
 
     <CustomPagination
       v-if="
-        pagination && pagination.current_page !== undefined && pagination.last_page !== undefined
+        !loadingProdutos &&
+        pagination &&
+        pagination.current_page !== undefined &&
+        pagination.last_page !== undefined
       "
       :total-pages="pagination.last_page"
       :current-page="pagination.current_page"

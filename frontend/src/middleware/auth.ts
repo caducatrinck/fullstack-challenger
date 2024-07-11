@@ -14,7 +14,7 @@ const authGuard = (
     next({ name: 'login' }); // Redirecione para a página de login
   } else if ((to.name === 'login' || to.name === 'registrar') && store.token) {
     // O usuário está logado e está tentando acessar a página de login ou registro
-    next({ name: 'home' }); // Redirecione para a página inicial
+    next({ name: 'dashboard' }); // Redirecione para a página inicial
   } else {
     // O usuário está autorizado a acessar a rota ou está na página de login/registro
     next(); // Continue para a próxima rota

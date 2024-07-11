@@ -8,7 +8,7 @@
     <div class="p-4">
       <h2 class="text-xl font-bold">{{ product.nome }}</h2>
       <p class="text-gray-700">Categoria: {{ product?.categoria?.nome }}</p>
-      <p class="text-gray-700">Preço: R$ {{ formattedPrice }}</p>
+      <p class="text-gray-700">Preço: {{ formattedPrice }}</p>
       <p class="text-gray-700">Situação: {{ product.situacao ? 'Ativo' : 'Inativo' }}</p>
     </div>
   </div>
@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
 import type { IProdutoCard } from '@/types/produtos';
+import { centavosParaReal } from '@/utils/format';
 import { defineProps, computed } from 'vue';
 
 const props = defineProps<{
@@ -23,7 +24,7 @@ const props = defineProps<{
 }>();
 
 const formattedPrice = computed(() => {
-  return parseFloat(`${props.product.preco}`).toFixed(2);
+  return centavosParaReal(props.product.preco);
 });
 </script>
 

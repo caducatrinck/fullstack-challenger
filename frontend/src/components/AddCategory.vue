@@ -23,7 +23,12 @@
           :error="situacaoError"
         />
         <div class="flex justify-end">
-          <CustomButton msg="Add Category" variant="primary" type="submit" class="w-1/2" />
+          <CustomButton
+            msg="Add Category"
+            variant="primary"
+            type="submit"
+            class="w-[100%] h-[38px]"
+          />
         </div>
       </form>
     </div>

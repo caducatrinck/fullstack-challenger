@@ -85,7 +85,6 @@ withDefaults(
 }
 
 .secondary:hover {
-  border-bottom: 1px solid transparent;
   color: var(--color-primary-hover);
 }
 

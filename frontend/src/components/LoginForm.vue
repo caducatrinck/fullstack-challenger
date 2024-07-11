@@ -67,12 +67,13 @@ const onSubmit = async () => {
       :error="passwordError"
     />
     <CustomButton
+      class="w-[80%] h-[38px]"
       type="button"
       msg="Criar conta"
       @click="router.push('/register')"
       variant="secondary"
     />
-    <CustomButton msg="Login" type="submit" />
+    <CustomButton class="w-[80%] h-[38px]" msg="Login" type="submit" />
     <p v-if="loginError" class="error">{{ loginError }}</p>
   </form>
 </template>

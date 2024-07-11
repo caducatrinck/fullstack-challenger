@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import AboutView from '../views/AboutView.vue';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import authGuard from '@/middleware/auth';
@@ -13,11 +12,6 @@ const routes = [
     path: '/',
     name: 'dashboard',
     component: DashboardView
-  },
-  {
-    path: '/about',
-    name: 'about',
-    component: AboutView
   },
   {
     path: '/login',

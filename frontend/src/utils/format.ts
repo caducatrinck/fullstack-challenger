@@ -13,3 +13,17 @@ export function formatarDinheiroBR(valor: string) {
 
   return valor;
 }
+export function centavosParaReal(centavos: number) {
+  // Verifica se o valor informado é numérico
+  if (isNaN(centavos)) {
+    return 'Valor inválido';
+  }
+
+  // Formata o valor em reais
+  const valorFormatado = (centavos / 100).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  });
+
+  return valorFormatado;
+}
