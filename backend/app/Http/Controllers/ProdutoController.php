@@ -21,7 +21,7 @@ class ProdutoController extends Controller
                 'categoria_id' => 'required|integer|exists:categorias,id',
                 'nome' => 'required|string|max:255',
                 'preco' => 'required|numeric',
-                'foto' => 'nullable|image|max:2048',
+                'foto' => 'required|image|max:2048',
                 'situacao' => 'required|boolean',
             ]);
 
@@ -90,15 +90,17 @@ class ProdutoController extends Controller
                 $query->where('categoria_id', $categoriaId);
             }
 
-            return $query->paginate($perPage);
+            return $query->with('categoria')->paginate($perPage); // Inclua a relação com a categoria
         });
 
         // Adicione logs para verificar os produtos retornados
         error_log('Produtos encontrados: ' . json_encode($produtos->items()));
 
-        // Inclua a categoria em cada produto
+        // Adicionar a URL completa da imagem
         $produtos->getCollection()->transform(function ($produto) {
-            $produto->categoria = Categoria::find($produto->categoria_id);
+            if ($produto->foto) {
+                $produto->foto = url('storage/produtos/' . $produto->foto);
+            }
             return $produto;
         });
 

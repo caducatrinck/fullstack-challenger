@@ -13,7 +13,7 @@
       <div
         @click="triggerFileInput"
         class="w-40 h-40 border rounded shadow-sm transition duration-200 ease-in-out focus:outline-none focus:border-blue-500 focus:shadow-lg disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed cursor-pointer custom-input flex items-center justify-center overflow-hidden relative"
-        :class="error ? 'border-red-500' : 'border-gray-300'"
+        :class="error || props.error ? 'border-red-500' : 'border-gray-300'"
       >
         <template v-if="file">
           <img :src="imageSrc" alt="Pré-visualização" class="object-cover w-full h-full" />

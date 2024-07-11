@@ -12,8 +12,10 @@ const props = withDefaults(defineProps<ICustonInputProps>(), {
 
 const emit = defineEmits(['update:modelValue']);
 
-const localValue = ref(props.modelValue);
-const hasInteracted = ref(false); // Novo estado para rastrear a interação do usuário
+const localValue = ref<string | null>(props.modelValue);
+const isError = ref<string>(props.error);
+
+const hasInteracted = ref(false);
 
 watch(localValue, (newValue) => {
   emit('update:modelValue', newValue);
@@ -29,6 +31,29 @@ const updateValue = (event: Event) => {
     hasInteracted.value = true; // Marcar como interagido após a primeira entrada
   }
 };
+
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    if (newVal === '') {
+      localValue.value = '';
+      hasInteracted.value = false; // Resetar a interação quando o valor está vazio
+    } else {
+      localValue.value = newVal;
+    }
+  }
+);
+
+watch(
+  () => props.error,
+  (newVal) => {
+    if (!localValue.value) {
+      isError.value = '';
+    } else {
+      isError.value = newVal;
+    }
+  }
+);
 </script>
 
 <template>
@@ -37,15 +62,23 @@ const updateValue = (event: Event) => {
     <input
       :id="id"
       :type="type === 'currency' ? 'text' : type"
-      :value="type === 'currency' && hasInteracted ? formatarDinheiroBR(localValue) : localValue"
+      :value="
+        type === 'currency' && hasInteracted && localValue
+          ? formatarDinheiroBR(localValue)
+          : localValue
+      "
       :placeholder="placeholder"
       @input="updateValue"
       :class="[
-        error ? 'border-red-500' : 'border-gray-300',
+        isError ? 'border-red-500' : 'border-gray-300',
         'h-12 w-full py-2 px-4 text-base font-sans border rounded shadow-sm transition duration-200 ease-in-out focus:outline-none focus:border-blue-500 focus:shadow-lg disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed custom-input'
       ]"
     />
-    <span v-if="error" class="text-red-500 text-xs mt-1 input-label uppercase">{{ error }}</span>
+    <div class="min-h-6">
+      <span v-if="isError" class="text-red-500 text-xs mt-1 font input-label uppercase">{{
+        isError
+      }}</span>
+    </div>
   </div>
 </template>
 

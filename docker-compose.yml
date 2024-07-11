@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   frontend:
     container_name: frontend-app
@@ -22,6 +24,8 @@ services:
       - "9003:9003" # Porta padrão do XDebug 3
     volumes:
       - ./backend:/var/www/html
+      - ./backend/storage:/var/www/html/storage
+      - ./backend/bootstrap/cache:/var/www/html/bootstrap/cache
     environment:
       - DB_HOST=db
       - DB_PORT=3306
@@ -30,6 +34,7 @@ services:
       - DB_PASSWORD=123123123
       - XDEBUG_MODE=debug,develop
       - XDEBUG_CONFIG=client_host=host.docker.internal client_port=9003
+    command: /bin/sh -c "chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache && php artisan storage:link && apache2-foreground"
 
   db:
     image: mysql:8.0

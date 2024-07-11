@@ -1,59 +1,158 @@
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import CustomInput from './CustomInput.vue';
+import CustomButton from './CustomButton.vue';
+import RadioInput from './RadioInput.vue';
+import SelectInput from './SelectInput.vue';
+import ImageUpload from './ImageUpload.vue';
+import CategoryService from '@/services/CategoryService';
+import ProductService from '@/services/ProductService';
+import CustomLoading from './CustomLoading.vue';
+import * as Yup from 'yup';
+import { useField, useForm } from 'vee-validate';
+import { useToast } from 'vue-toast-notification';
+import type { IOptions } from '@/types/inputType';
+
+const produtoSchema = Yup.object().shape({
+  categoriaId: Yup.number().required('A categoria é obrigatória'),
+  nome: Yup.string()
+    .required('O nome é obrigatório')
+    .max(255, 'O nome pode ter no máximo 255 caracteres'),
+  preco: Yup.string().required('O preço é obrigatório'),
+  situacao: Yup.boolean().required('A situação é obrigatória').default(true),
+  foto: Yup.mixed()
+    .test('fileType', 'Somente imagens são permitidas', (value) => {
+      return (
+        value &&
+        value instanceof File &&
+        ['image/jpeg', 'image/png', 'image/jpg'].includes(value.type)
+      );
+    })
+    .test('fileSize', 'O arquivo deve ter no máximo 2MB', (value) => {
+      return value && value instanceof File && value.size <= 2048 * 1024;
+    })
+});
+
+const { validate, resetForm } = useForm({ validationSchema: produtoSchema });
+
+const { value: categoriaId, errorMessage: categoriaIdError } = useField<string | null>(
+  'categoriaId'
+);
+const { value: nome, errorMessage: nomeError } = useField<string | null>('nome');
+const { value: preco, errorMessage: precoError } = useField<string | null>('preco');
+const { value: foto, errorMessage: fotoError } = useField<File>('foto');
+const situacao = ref(true);
+
+const categories = ref<IOptions[]>([]);
+
+const loadingCategory = ref(false);
+const loading = ref(false);
+const $toast = useToast();
+
+const onSubmit = async () => {
+  try {
+    await validate();
+    if (!foto.value || !categoriaId.value || !nome.value || !preco.value) {
+      return;
+    }
+
+    loading.value = true;
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('foto', foto.value); // A foto já está sendo tratada como arquivo
+    formDataToSend.append('categoria_id', categoriaId.value);
+    formDataToSend.append('nome', nome.value);
+    formDataToSend.append('preco', preco.value?.replace(/\D/g, '')); // Convertendo para float
+    formDataToSend.append('situacao', situacao.value ? '1' : '0'); // Enviando como string '1' ou '0'
+
+    const response = await ProductService.create(formDataToSend);
+
+    resetForm();
+
+    $toast.success(response.message || 'Produto adicionado com sucesso!');
+  } catch (error) {
+    $toast.error('Erro ao adicionar produto. Por favor, tente novamente.');
+  } finally {
+    loading.value = false;
+  }
+};
+
+const GetAndSetCategory = async () => {
+  loadingCategory.value = true;
+  const response = await CategoryService.get();
+  categories.value = response.data.map((category) => ({
+    value: category.id,
+    label: category.nome
+  }));
+
+  loadingCategory.value = false;
+};
+
+onMounted(() => {
+  GetAndSetCategory();
+});
+</script>
+
 <template>
   <div class="w-full max-w-lg mx-auto mt-10">
     <CustomLoading :is-loading="loading" />
-    <form @submit.prevent="handleSubmit">
+    <form @submit.prevent="onSubmit">
       <!-- Foto -->
-      <div class="mb-4">
+      <div class="mb-2">
         <ImageUpload
-          v-model="formData.photo"
+          v-model="foto"
           label="Foto"
-          id="photo"
+          id="foto"
           :max-file-size="2 * 1024 * 1024"
           :accepted-file-types="['image/png', 'image/jpeg', 'image/jpg']"
           placeholder="Selecione a imagem"
+          :error="fotoError"
         />
       </div>
 
       <!-- Nome -->
-      <div class="mb-4">
+      <div class="mb-2">
         <CustomInput
-          v-model="formData.name"
+          v-model="nome"
           label="Nome"
-          id="name"
+          id="nome"
           placeholder="Digite o nome do produto"
           required
+          :error="nomeError"
         />
       </div>
 
       <!-- Categoria -->
-      <div class="mb-4">
+      <div class="mb-2">
         <SelectInput
-          v-model="formData.category"
+          v-model="categoriaId"
           label="Categoria"
-          id="category"
+          id="categoriaId"
           placeholder="Selecione uma categoria"
           required
           :loading="loadingCategory"
           :options="categories"
+          :error="categoriaIdError"
         />
       </div>
 
       <!-- Preço -->
-      <div class="mb-4">
+      <div class="mb-2">
         <CustomInput
-          v-model="formData.price"
+          v-model="preco"
           type="currency"
           label="Preço"
-          id="price"
+          id="preco"
           placeholder="Digite o preço do produto"
           required
+          :error="precoError"
         />
       </div>
 
       <!-- Situação -->
       <div class="mb-4 flex flex-row gap-6">
         <RadioInput
-          v-model="formData.status"
+          v-model="situacao"
           id="status"
           label="Situação"
           layout="horizontal"
@@ -66,92 +165,11 @@
 
       <!-- Botão de Enviar -->
       <div class="mt-6">
-        <CustomButton msg="Adicionar Produto" variant="primary" type="submit" />
+        <CustomButton class="w-full h-10" msg="Adicionar Produto" variant="primary" type="submit" />
       </div>
     </form>
   </div>
 </template>
-
-<script setup>
-import { ref, onMounted } from 'vue';
-import CustomInput from './CustomInput.vue';
-import CustomButton from './CustomButton.vue';
-import RadioInput from './RadioInput.vue';
-import SelectInput from './SelectInput.vue';
-import ImageUpload from './ImageUpload.vue'; // Importa o componente ImageUpload
-import CategoryService from '@/services/CategoryService';
-
-import ProductService from '@/services/ProductService';
-import CustomLoading from './CustomLoading.vue';
-
-const categories = ref([{ value: '', label: '' }]);
-
-const selectedOption = ref(null);
-const formData = ref({
-  name: '',
-  price: '',
-  photo: null,
-  status: true,
-  category: null
-});
-const loadingCategory = ref(false);
-const loading = ref(false);
-
-const handleSubmit = async () => {
-  const { name, price, photo, status, category } = formData.value;
-
-  const formDataToSend = new FormData();
-  formDataToSend.append('foto', photo);
-  formDataToSend.append('categoria_id', category.value);
-  formDataToSend.append('nome', name);
-  formDataToSend.append('preco', price.replace(/\D/g, ''));
-  formDataToSend.append('situacao', status ? '1' : '0');
-
-  // Log para verificar os valores
-
-  try {
-    loading.value = true;
-
-    const response = await ProductService.create(formDataToSend);
-
-    console.log('Produto adicionado:', response.data);
-
-    // Limpe o formulário após o envio bem-sucedido
-    formData.value = {
-      name: '',
-      price: '',
-      photo: null,
-      status: true,
-      category: null
-    };
-    selectedOption.value = null;
-
-    // Exiba uma mensagem de sucesso ou redirecione para outra página, etc.
-    alert('Produto adicionado com sucesso!');
-  } catch (error) {
-    // Lide com erros de envio, exiba mensagens de erro, etc.
-    console.error('Erro ao enviar produto:', error);
-    alert('Erro ao adicionar produto. Por favor, tente novamente.');
-  } finally {
-    loading.value = false;
-  }
-};
-
-const getAndSetCategory = async () => {
-  loadingCategory.value = true;
-  const response = await CategoryService.get();
-  categories.value = response.data.map((category) => ({
-    value: category.id,
-    label: category.nome
-  }));
-
-  loadingCategory.value = false;
-};
-
-onMounted(() => {
-  getAndSetCategory();
-});
-</script>
 
 <style>
 /* Adicionar estilos para a transição do dropdown */

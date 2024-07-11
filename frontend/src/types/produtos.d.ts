@@ -68,3 +68,10 @@ export interface IPagination {
   next_page_url: string | null;
   prev_page_url: string | null;
 }
+
+export interface IPaginationProps {
+  totalPages: number;
+  currentPage: number;
+  itemsPerPage: number;
+  itemsPerPageOptions: number[];
+}

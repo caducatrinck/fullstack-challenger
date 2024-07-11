@@ -5,15 +5,17 @@
       <div
         @click="toggleDropdown"
         class="w-full h-12 py-2 px-4 text-base font-sans border rounded shadow-sm transition duration-200 ease-in-out focus:outline-none focus:border-blue-500 focus:shadow-lg disabled:bg-gray-100 disabled:text-gray-500 disabled:border-gray-200 disabled:cursor-not-allowed custom-input flex items-center justify-between"
-        :class="error ? 'border-red-500' : 'border-gray-300'"
-        :style="{ cursor: props.loading ? 'not-allowed' : 'pointer' }"
+        :class="isError ? 'border-red-500' : 'border-gray-300'"
+        :style="{ cursor: loading ? 'not-allowed' : 'pointer' }"
       >
         <span :class="`${selectedOption ? 'text-gray-900' : 'text-gray-600'} text-gray-400 font`">{{
-          selectedOption ? selectedOption.label : placeholder
+          selectedOption
+            ? options.filter((option) => option.value === selectedOption)[0].label
+            : placeholder
         }}</span>
 
         <div class="flex items-center">
-          <template v-if="props.loading">
+          <template v-if="loading">
             <div class="w-8 h-8 relative">
               <div class="absolute inset-0 flex items-center justify-center">
                 <div
@@ -76,19 +78,23 @@
         </div>
       </transition>
     </div>
-    <span v-if="error" class="text-red-500 text-xs mt-1 font uppercase">{{ error }}</span>
+    <div class="min-h-6">
+      <span v-if="isError" class="text-red-500 text-xs mt-1 font input-label uppercase">{{
+        isError
+      }}</span>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { IOptions } from '@/types/inputType';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = withDefaults(
   defineProps<{
     id: string;
     label: string;
-    modelValue: { value: number; label: string } | null;
+    modelValue: number | null;
     placeholder: string;
     options: IOptions[];
     error?: string;
@@ -105,7 +111,9 @@ const props = withDefaults(
 const emit = defineEmits(['update:modelValue']);
 
 const isOpen = ref(false);
-const selectedOption = ref(props.modelValue);
+const isError = ref(props.error);
+
+const selectedOption = ref<number | null>();
 
 const toggleDropdown = () => {
   if (!props.loading) {
@@ -120,11 +128,19 @@ const clearSelection = () => {
     isOpen.value = false;
   }
 };
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    if (!newVal) {
+      clearSelection();
+    }
+  }
+);
 
 const selectOption = (option: IOptions) => {
   if (!props.loading) {
-    selectedOption.value = option;
-    emit('update:modelValue', option);
+    selectedOption.value = option.value;
+    emit('update:modelValue', option.value);
     isOpen.value = false;
   }
 };

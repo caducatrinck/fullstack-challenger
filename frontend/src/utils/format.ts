@@ -1,4 +1,4 @@
-export function formatarDinheiroBR(valor) {
+export function formatarDinheiroBR(valor: string) {
   // Remove todos os caracteres que não são números
   valor = `${+valor.replace(/\D/g, '')}`;
 
@@ -10,6 +10,6 @@ export function formatarDinheiroBR(valor) {
   valor = valor.replace(/\B(?=(\d{3})+(?!\d{2}))/g, '.');
 
   valor = 'R$' + valor;
-  console.log(valor);
+
   return valor;
 }
